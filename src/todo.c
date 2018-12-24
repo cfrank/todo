@@ -27,29 +27,32 @@ int main(int argc, char **argv)
         }
 
         switch (command) {
-        case INIT:
-                printf("Initializing...");
-                break;
         case ADD:
                 printf("Add...");
-                break;
-        case LIST:
-                printf("List...");
-                break;
-        case VIEW:
-                printf("View...");
-                break;
-        case EDIT:
-                printf("Edit...");
-                break;
-        case DELETE:
-                printf("Delete...");
                 break;
         case CREATE:
                 printf("Create...");
                 break;
+        case DELETE:
+                printf("Delete...");
+                break;
+        case EDIT:
+                printf("Edit...");
+                break;
+        case HELP:
+                printf("Help...");
+                break;
+        case INIT:
+                printf("Initializing...");
+                break;
+        case LIST:
+                printf("List...");
+                break;
         case VERSION:
                 printf("Version...");
+                break;
+        case VIEW:
+                printf("View...");
                 break;
         default:
                 break;

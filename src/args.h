@@ -9,10 +9,11 @@ enum arg_command {
     CREATE,
     DELETE,
     EDIT,
+    HELP,
     INIT,
     LIST,
-    VIEW,
     VERSION,
+    VIEW,
     UNKNOWN,
     COMMAND_COUNT, // Needs to be last - used to count number of commands
 };
