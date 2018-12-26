@@ -4,5 +4,8 @@
 
 #pragma once
 
-void init_command(void);
-void version_command(void);
+#include <stdint.h>
+
+const uint8_t VERSION_MAJOR = 0;
+const uint8_t VERSION_MINOR = 0;
+const uint8_t VERSION_PATCH = 1;

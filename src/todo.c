@@ -50,7 +50,7 @@ int main(int argc, char **argv)
                 printf("List...");
                 break;
         case VERSION:
-                printf("Version...");
+                version_command();
                 break;
         case VIEW:
                 printf("View...");
