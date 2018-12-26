@@ -1,15 +1,16 @@
+// Copyright 2018 Chris Frank
 // Licensed under BSD-3-Clause
-// Refer to the license.txt file included in the root of the
-// project
+// Refer to the license.txt file included in the root of the project
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "args.h"
+#include "commands.h"
 
 int main(int argc, char **argv)
 {
-        if (argc < 1) {
+        if (argc < 2) {
                 fprintf(stderr,
                         "Invalid arguments see 'todo help' for "
                         "usage info\n");
@@ -43,7 +44,7 @@ int main(int argc, char **argv)
                 printf("Help...");
                 break;
         case INIT:
-                printf("Initializing...");
+                init_command();
                 break;
         case LIST:
                 printf("List...");
