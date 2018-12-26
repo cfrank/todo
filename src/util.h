@@ -14,9 +14,11 @@ char *duplicate_string(const char *string);
 char *convert_string_to_lowercase(const char *string);
 
 // Filesystem utilities
+void create_file(const char *file, const char *mode);
 char *create_file_path(const char *directory_name, const char *filename);
 bool create_directory(const char *directory_name);
 bool directory_exists(const char *directory_name);
+FILE *open_file(const char *file, const char *mode);
 DIR *open_directory(const char *directory_name);
 
 // General utilities

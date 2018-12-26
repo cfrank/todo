@@ -53,6 +53,12 @@ bool create_directory(const char *directory_name)
         return true;
 }
 
+void create_file(const char *file_path, const char *mode)
+{
+        FILE *file = open_file(file_path, mode);
+        fclose(file);
+}
+
 char *create_file_path(const char *directory_name, const char *filename)
 {
         size_t directory_length = strlen(directory_name);
@@ -79,7 +85,7 @@ bool directory_exists(const char *directory_name)
         }
 
         closedir(directory);
-        return false;
+        return true;
 }
 
 DIR *open_directory(const char *directory_name)
@@ -91,6 +97,25 @@ DIR *open_directory(const char *directory_name)
         }
 
         return NULL;
+}
+
+FILE *open_file(const char *file_path, const char *mode)
+{
+        for (;;) {
+                FILE *file = fopen(file_path, mode);
+
+                if (file) {
+                        return file;
+                }
+
+                if (errno == EINTR) {
+                        continue;
+                }
+
+                perror("huh?");
+
+                die("Could not create %s", file_path);
+        }
 }
 
 void die(const char *format, ...)

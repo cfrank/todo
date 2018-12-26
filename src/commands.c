@@ -21,5 +21,7 @@ void init_command(void)
 
         puts(file_path);
 
+        create_file(file_path, "ab+");
+
         free(file_path);
 }
