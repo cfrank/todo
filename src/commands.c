@@ -9,6 +9,7 @@
 #include "commands.h"
 #include "constants.h"
 #include "util.h"
+#include "version.h"
 
 void init_command(void)
 {
@@ -24,4 +25,12 @@ void init_command(void)
         create_file(file_path, "ab+");
 
         free(file_path);
+}
+
+void version_command(void)
+{
+        printf("Todo version %d.%d.%d\n",
+               VERSION_MAJOR,
+               VERSION_MINOR,
+               VERSION_PATCH);
 }
