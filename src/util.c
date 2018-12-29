@@ -80,7 +80,7 @@ bool directory_exists(const char *directory_name)
 {
         DIR *directory = open_directory(directory_name);
 
-        if (!open_directory(directory_name)) {
+        if (!directory) {
                 return false;
         }
 
@@ -112,10 +112,38 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                perror("huh?");
-
                 die("Could not create %s", file_path);
         }
+}
+
+static char get_default_input(bool affirmative_default)
+{
+        if (affirmative_default) {
+                return 'y';
+        }
+
+        return 'n';
+}
+
+bool input_to_bool(const char *message, bool affirmative_default)
+{
+        char input;
+
+        fputs(message, stdout);
+
+        if (affirmative_default) {
+                fputs(" [Y,n]", stdout);
+        } else {
+                fputs(" [y,N]", stdout);
+        }
+
+        input = tolower(fgetc(stdin));
+
+        if (input == '\n' || input == get_default_input(affirmative_default)) {
+                return affirmative_default;
+        }
+
+        return !affirmative_default;
 }
 
 void die(const char *format, ...)

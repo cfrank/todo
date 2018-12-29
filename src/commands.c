@@ -11,6 +11,10 @@
 #include "util.h"
 #include "version.h"
 
+int add_command(void)
+{
+}
+
 void init_command(void)
 {
         if (!create_directory(TODO_DIR_NAME)) {

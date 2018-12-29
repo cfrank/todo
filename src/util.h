@@ -21,5 +21,8 @@ bool directory_exists(const char *directory_name);
 FILE *open_file(const char *file, const char *mode);
 DIR *open_directory(const char *directory_name);
 
+// Input utilities
+bool input_to_bool(const char *message, bool affirmative_default);
+
 // General utilities
 void die(const char *format, ...);
