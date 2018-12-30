@@ -33,11 +33,11 @@ struct todo_data {
 };
 
 struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
-                                   const struct state_data *state,
+                                   struct state_data *state,
                                    const char *subject,
                                    const char *description);
-struct state_data *create_custom_state_data(const char *string);
-struct state_data *create_defined_state_data(enum state_value value);
+struct state_data *create_custom_state_data(bool active, const char *string);
+struct state_data *create_defined_state_data(bool active, enum state_value value);
 
 void destroy_todo_data(struct todo_data *todo);
 void destroy_state_data(struct state_data *state);

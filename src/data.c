@@ -7,7 +7,7 @@
 #include "data.h"
 
 struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
-                                   const struct state_data *state,
+                                   struct state_data *state,
                                    const char *subject, const char *description)
 {
         struct todo_data *ret = malloc(sizeof(struct state_data));

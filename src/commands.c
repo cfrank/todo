@@ -13,6 +13,7 @@
 
 int add_command(void)
 {
+        return EXIT_SUCCESS;
 }
 
 void init_command(void)
