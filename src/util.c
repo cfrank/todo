@@ -129,7 +129,7 @@ char *ingest_user_input(uint64_t initial_size)
         size_t reallocs = 0;
 
         char ch;
-        size_t size;
+        size_t size = 0;
         size_t buffer_size = initial_size;
         char *input = malloc(buffer_size);
 

@@ -16,7 +16,7 @@
 int add_command(void)
 {
         uint64_t priority;
-        struct state_value *state;
+        // struct state_data *state;
 
         print_user_message("Priority (Ex. 1): ");
 

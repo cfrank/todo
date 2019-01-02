@@ -25,7 +25,7 @@ struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
         return ret;
 }
 
-struct state_data *create_custom_state_data(bool active, const char *string)
+struct state_data *create_custom_state_data(bool active, char *string)
 {
         struct state_data *ret = malloc(sizeof(struct state_data));
 
