@@ -25,8 +25,6 @@ int add_command(void)
                 die("ERROR: You entered an invalid priority");
         }
 
-        printf("%" PRIu64, priority);
-
         return EXIT_SUCCESS;
 }
 

@@ -123,6 +123,47 @@ void print_user_message(const char *message)
         fputs(message, stdout);
 }
 
+char *ingest_user_input(uint64_t initial_size)
+{
+        const size_t max_reallocs = 10;
+        size_t reallocs = 0;
+
+        char ch;
+        size_t size;
+        size_t buffer_size = initial_size;
+        char *input = malloc(buffer_size);
+
+        while ((ch = getchar()) != EOF && ch != '\n') {
+                input[size++] = ch;
+
+                if (size == buffer_size || reallocs <= max_reallocs) {
+                        // User input is larger than current buffer size
+                        // double it
+                        buffer_size = size + initial_size;
+
+                        input = realloc(input, buffer_size);
+
+                        if (input == NULL) {
+                                die("ERROR: Could not save user input to "
+                                    "memory");
+                        }
+
+                        reallocs++;
+                }
+
+                if (reallocs == max_reallocs) {
+                        die("ERROR: Invalid user input (Exceeded maximum "
+                            "length)");
+                }
+        }
+
+        if (ch == EOF) {
+                die("ERROR: Could not read in user input");
+        }
+
+        return input;
+}
+
 static char get_default_input(bool affirmative_default)
 {
         if (affirmative_default) {

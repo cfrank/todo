@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 // String utilities
@@ -23,6 +24,7 @@ DIR *open_directory(const char *directory_name);
 
 // Input utilities
 void print_user_message(const char *message);
+char *ingest_user_input(uint64_t initial_size);
 bool input_to_bool(const char *message, bool affirmative_default);
 bool validate_int_input(int scan_result);
 
