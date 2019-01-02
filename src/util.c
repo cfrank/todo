@@ -43,8 +43,7 @@ bool create_directory(const char *directory_name)
 {
         if (mkdir(directory_name, 0777) < 0) {
                 if (errno != EEXIST) {
-                        perror(directory_name);
-                        exit(EXIT_FAILURE);
+                        die("%s: %s", directory_name, strerror(errno));
                 }
 
                 return false;
@@ -66,7 +65,7 @@ char *create_file_path(const char *directory_name, const char *filename)
         char *file_path = malloc((directory_length + file_length) + 1);
 
         if (file_path == NULL) {
-                die("ERROR: Could not create file path for %s", filename);
+                die("Could not create file path for %s", filename);
         }
 
         strncpy(file_path, directory_name, directory_length);
@@ -112,7 +111,7 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                die("ERROR: Could not create %s", file_path);
+                die("Could not create %s", file_path);
         }
 }
 
@@ -134,7 +133,7 @@ char *ingest_user_input(uint64_t initial_size)
         char *input = malloc(buffer_size);
 
         if (input == NULL) {
-                die("ERROR: Could allocate space for user input");
+                die("Could allocate space for user input");
         }
 
         while ((ch = getchar()) != EOF && ch != '\n') {
@@ -148,21 +147,19 @@ char *ingest_user_input(uint64_t initial_size)
                         input = realloc(input, buffer_size);
 
                         if (input == NULL) {
-                                die("ERROR: Could not save user input to "
-                                    "memory");
+                                die("Could not save user input to memory");
                         }
 
                         reallocs++;
                 }
 
                 if (reallocs == max_reallocs) {
-                        die("ERROR: Invalid user input (Exceeded maximum "
-                            "length)");
+                        die("Invalid user input (Exceeded maximum length)");
                 }
         }
 
         if (ch == EOF) {
-                die("ERROR: Could not read in user input");
+                die("Could not read in user input");
         }
 
         return input;
@@ -208,7 +205,7 @@ bool validate_int_input(int scan_result)
                 };
 
                 if (ch == EOF) {
-                        die("Error: Failed to read in data from user");
+                        die("Failed to read in data from user");
                 }
 
                 return false;
@@ -222,8 +219,9 @@ void die(const char *format, ...)
         va_list vargs;
 
         va_start(vargs, format);
+        fputs("ERROR: ", stderr);
         vfprintf(stderr, format, vargs);
-        putchar('\n');
+        fputc('\n', stderr);
         va_end(vargs);
 
         exit(EXIT_FAILURE);

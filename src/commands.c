@@ -23,7 +23,7 @@ int add_command(void)
         int result = scanf("%" PRIu64, &priority);
 
         if (!validate_int_input(result)) {
-                die("ERROR: You entered an invalid priority");
+                die("You entered an invalid priority");
         }
 
         if (!input_to_bool("Use a defined priority?", true)) {
@@ -36,7 +36,7 @@ void init_command(void)
 {
         if (!create_directory(TODO_DIR_NAME)) {
                 // Directory already exists
-                die("ERROR: You cannot re-initialize todo");
+                die("You cannot re-initialize todo");
         }
 
         char *file_path = create_file_path(TODO_DIR_NAME, "todos.data");

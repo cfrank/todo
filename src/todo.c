@@ -7,24 +7,18 @@
 
 #include "args.h"
 #include "commands.h"
+#include "util.h"
 
 int main(int argc, char **argv)
 {
         if (argc < 2) {
-                fprintf(stderr,
-                        "Invalid arguments see 'todo help' for "
-                        "usage info\n");
-                return EXIT_FAILURE;
+                die("Invalid arguments see 'todo help' for usage info");
         }
 
         enum arg_command command = get_command(argv[1]);
 
         if (command == UNKNOWN) {
-                fprintf(stderr,
-                        "Invalid command found! Run 'todo help' for usage "
-                        "info\n");
-
-                return EXIT_FAILURE;
+                die("Invalid command found! Run 'todo help' for usage info");
         }
 
         switch (command) {
