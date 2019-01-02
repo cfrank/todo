@@ -16,6 +16,7 @@
 int add_command(void)
 {
         uint64_t priority;
+        struct state_value *state;
 
         print_user_message("Priority (Ex. 1): ");
 
@@ -23,6 +24,9 @@ int add_command(void)
 
         if (!validate_int_input(result)) {
                 die("ERROR: You entered an invalid priority");
+        }
+
+        if (!input_to_bool("Use a defined priority?", true)) {
         }
 
         return EXIT_SUCCESS;

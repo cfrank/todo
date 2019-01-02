@@ -56,7 +56,18 @@ struct state_data *create_defined_state_data(bool active,
         return ret;
 }
 
+void destroy_todo_data(struct todo_data *todo)
+{
+        destroy_state_data(todo->state);
+
+        free(todo);
+}
+
 void destroy_state_data(struct state_data *state)
 {
+        if (state->custom_state) {
+                free(state->string);
+        }
+
         free(state);
 }
