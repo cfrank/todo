@@ -195,7 +195,7 @@ bool input_to_bool(const char *message, bool affirmative_default)
         return !affirmative_default;
 }
 
-bool validate_scan_input(int scan_result)
+bool validate_scan_result(int scan_result)
 {
         if (scan_result != 1) {
                 // clear garbage buffer

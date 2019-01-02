@@ -26,7 +26,7 @@ DIR *open_directory(const char *directory_name);
 void print_user_message(const char *message);
 char *ingest_user_input(uint64_t initial_size);
 bool input_to_bool(const char *message, bool affirmative_default);
-bool validate_scan_input(int scan_result);
+bool validate_scan_result(int scan_result);
 
 // General utilities
 void die(const char *format, ...);

@@ -22,7 +22,7 @@ int add_command(void)
 
         int result = scanf("%" PRIu64, &priority);
 
-        if (!validate_scan_input(result)) {
+        if (!validate_scan_result(result)) {
                 die("You entered an invalid priority");
         }
 
