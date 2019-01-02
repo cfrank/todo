@@ -15,7 +15,7 @@ char *duplicate_string(const char *string);
 char *convert_string_to_lowercase(const char *string);
 
 // Filesystem utilities
-void create_file(const char *file, const char *mode);
+bool create_file(const char *file, const char *mode);
 char *create_file_path(const char *directory_name, const char *filename);
 bool create_directory(const char *directory_name);
 bool directory_exists(const char *directory_name);

@@ -41,9 +41,9 @@ void init_command(void)
 
         char *file_path = create_file_path(TODO_DIR_NAME, "todos.data");
 
-        puts(file_path);
-
-        create_file(file_path, "ab+");
+        if (!create_file(file_path, "ab+")) {
+                die("Failed to create todo data file");
+        }
 
         free(file_path);
 }

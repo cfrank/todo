@@ -52,10 +52,17 @@ bool create_directory(const char *directory_name)
         return true;
 }
 
-void create_file(const char *file_path, const char *mode)
+bool create_file(const char *file_path, const char *mode)
 {
         FILE *file = open_file(file_path, mode);
-        fclose(file);
+
+        if (file != NULL) {
+                fclose(file);
+
+                return true;
+        }
+
+        return false;
 }
 
 char *create_file_path(const char *directory_name, const char *filename)
@@ -70,7 +77,7 @@ char *create_file_path(const char *directory_name, const char *filename)
 
         strncpy(file_path, directory_name, directory_length);
         strncpy(file_path + directory_length, filename, file_length);
-        file_path[strlen(file_path)] = '\0';
+        file_path[directory_length + file_length] = '\0';
 
         return file_path;
 }
