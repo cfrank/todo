@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
         switch (command) {
         case ADD:
-                printf("Add...");
+                add_command();
                 break;
         case CREATE:
                 printf("Create...");

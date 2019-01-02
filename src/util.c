@@ -66,7 +66,7 @@ char *create_file_path(const char *directory_name, const char *filename)
         char *file_path = malloc((directory_length + file_length) + 1);
 
         if (file_path == NULL) {
-                die("Could not create file path for %s", filename);
+                die("ERROR: Could not create file path for %s", filename);
         }
 
         strncpy(file_path, directory_name, directory_length);
@@ -112,8 +112,15 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                die("Could not create %s", file_path);
+                die("ERROR: Could not create %s", file_path);
         }
+}
+
+void print_user_message(const char *message)
+{
+        fputs(":: ", stdout);
+
+        fputs(message, stdout);
 }
 
 static char get_default_input(bool affirmative_default)
@@ -129,12 +136,12 @@ bool input_to_bool(const char *message, bool affirmative_default)
 {
         char input;
 
-        fputs(message, stdout);
+        print_user_message(message);
 
         if (affirmative_default) {
-                fputs(" [Y,n]", stdout);
+                fputs(" [Y,n] ", stdout);
         } else {
-                fputs(" [y,N]", stdout);
+                fputs(" [y,N] ", stdout);
         }
 
         input = tolower(fgetc(stdin));
@@ -144,6 +151,25 @@ bool input_to_bool(const char *message, bool affirmative_default)
         }
 
         return !affirmative_default;
+}
+
+bool validate_int_input(int scan_result)
+{
+        if (scan_result != 1) {
+                // clear garbage buffer
+                int ch;
+                while ((ch = getchar()) != EOF && ch != '\n') {
+                        continue;
+                };
+
+                if (ch == EOF) {
+                        die("Error: Failed to read in data from user");
+                }
+
+                return false;
+        }
+
+        return true;
 }
 
 void die(const char *format, ...)

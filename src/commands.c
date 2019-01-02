@@ -3,16 +3,30 @@
 // Refer to the license.txt file included in the root of the project
 
 #include <dirent.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "commands.h"
 #include "constants.h"
+#include "data.h"
 #include "util.h"
 #include "version.h"
 
 int add_command(void)
 {
+        uint64_t priority;
+
+        print_user_message("Priority (Ex. 1): ");
+
+        int result = scanf("%" PRIu64, &priority);
+
+        if (!validate_int_input(result)) {
+                die("ERROR: You entered an invalid priority");
+        }
+
+        printf("%" PRIu64, priority);
+
         return EXIT_SUCCESS;
 }
 
@@ -20,7 +34,7 @@ void init_command(void)
 {
         if (!create_directory(TODO_DIR_NAME)) {
                 // Directory already exists
-                die("You cannot re-initialize todo");
+                die("ERROR: You cannot re-initialize todo");
         }
 
         char *file_path = create_file_path(TODO_DIR_NAME, "todos.data");
