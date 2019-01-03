@@ -26,7 +26,10 @@ int add_command(void)
                 die("You entered an invalid priority");
         }
 
-        if (!input_to_bool("Use a defined priority?", true)) {
+        bool use_defined = input_to_bool("Use defined state?", true);
+
+        if (use_defined) {
+                printf("%s", "Hello world!");
         }
 
         return EXIT_SUCCESS;

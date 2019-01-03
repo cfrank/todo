@@ -10,6 +10,8 @@
 
 #include "util.h"
 
+static void flush_input_buffer(void);
+
 char *duplicate_string(const char *string)
 {
         size_t string_length = strlen(string) + 1;
@@ -122,11 +124,17 @@ FILE *open_file(const char *file_path, const char *mode)
         }
 }
 
-void print_user_message(const char *message)
+static void flush_input_buffer(void)
 {
-        fputs(":: ", stdout);
+        int ch;
 
-        fputs(message, stdout);
+        while ((ch = getchar()) != EOF && ch != '\n') {
+                continue;
+        };
+
+        if (ch == EOF) {
+                die("Failed to read in data from user");
+        }
 }
 
 char *ingest_user_input(uint64_t initial_size)
@@ -202,21 +210,24 @@ bool input_to_bool(const char *message, bool affirmative_default)
         return !affirmative_default;
 }
 
+void print_user_message(const char *message)
+{
+        fputs(":: ", stdout);
+
+        fputs(message, stdout);
+}
+
 bool validate_scan_result(int scan_result)
 {
         if (scan_result != 1) {
                 // clear garbage buffer
-                int ch;
-                while ((ch = getchar()) != EOF && ch != '\n') {
-                        continue;
-                };
-
-                if (ch == EOF) {
-                        die("Failed to read in data from user");
-                }
+                flush_input_buffer();
 
                 return false;
         }
+
+        // Clear buffer to allow for ingesting more data from stdin
+        flush_input_buffer();
 
         return true;
 }

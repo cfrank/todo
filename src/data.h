@@ -10,6 +10,7 @@
 enum state_value {
         OPEN,
         IN_PROGRESS,
+        URGENT,
         RESOLVED,
         CLOSED,
         RE_OPENED,
@@ -39,6 +40,8 @@ struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
 struct state_data *create_custom_state_data(bool active, char *string);
 struct state_data *create_defined_state_data(bool active,
                                              enum state_value value);
+void print_state_values(void);
+const char *state_value_to_string(enum state_value value);
 
 void destroy_todo_data(struct todo_data *todo);
 void destroy_state_data(struct state_data *state);
