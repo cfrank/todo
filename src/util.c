@@ -219,15 +219,12 @@ void print_user_message(const char *message)
 
 bool validate_scan_result(int scan_result)
 {
-        if (scan_result != 1) {
-                // clear garbage buffer
-                flush_input_buffer();
+        // Clear any data left in the buffer from the call to scanf
+        flush_input_buffer();
 
+        if (scan_result != 1) {
                 return false;
         }
-
-        // Clear buffer to allow for ingesting more data from stdin
-        flush_input_buffer();
 
         return true;
 }
