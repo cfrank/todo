@@ -133,7 +133,7 @@ static void flush_input_buffer(void)
         };
 
         if (ch == EOF) {
-                die("Failed to read in data from user");
+                die("Failed to flush the input buffer");
         }
 }
 
