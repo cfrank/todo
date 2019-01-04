@@ -83,6 +83,8 @@ int add_command(void)
 
         print_user_message("Successfully saved '%s'\n", todo->subject);
 
+        destroy_todo_data(todo);
+
         return EXIT_SUCCESS;
 }
 

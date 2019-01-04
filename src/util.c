@@ -177,6 +177,8 @@ char *ingest_user_input(uint64_t initial_size)
                 die("Could not read in user input");
         }
 
+        input[size++] = '\0';
+
         return input;
 }
 
