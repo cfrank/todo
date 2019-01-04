@@ -81,7 +81,7 @@ int add_command(void)
 
         todo = create_todo_data(1, priority, state, subject, description);
 
-        die("Successfully saved %s", todo->subject);
+        print_user_message("Successfully saved '%s'\n", todo->subject);
 
         return EXIT_SUCCESS;
 }

@@ -23,10 +23,10 @@ DIR *open_directory(const char *directory_name);
 FILE *open_file(const char *file, const char *mode);
 
 // Input utilities
-void print_user_message(const char *message);
 char *ingest_user_input(uint64_t initial_size);
 bool input_to_bool(const char *message, bool affirmative_default);
 bool validate_scan_result(int scan_result);
 
 // General utilities
 void die(const char *format, ...);
+void print_user_message(const char *format, ...);

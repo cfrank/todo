@@ -217,13 +217,6 @@ bool input_to_bool(const char *message, bool affirmative_default)
         return !affirmative_default;
 }
 
-void print_user_message(const char *message)
-{
-        fputs(":: ", stdout);
-
-        fputs(message, stdout);
-}
-
 bool validate_scan_result(int scan_result)
 {
         // Clear any data left in the buffer from the call to scanf
@@ -247,4 +240,14 @@ void die(const char *format, ...)
         va_end(vargs);
 
         exit(EXIT_FAILURE);
+}
+
+void print_user_message(const char *format, ...)
+{
+        va_list vargs;
+
+        va_start(vargs, format);
+        fputs(":: ", stdout);
+        vfprintf(stdout, format, vargs);
+        va_end(vargs);
 }
