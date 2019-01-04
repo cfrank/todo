@@ -23,7 +23,6 @@ DIR *open_directory(const char *directory_name);
 FILE *open_file(const char *file, const char *mode);
 
 // Input utilities
-void flush_input_buffer(void);
 void print_user_message(const char *message);
 char *ingest_user_input(uint64_t initial_size);
 bool input_to_bool(const char *message, bool affirmative_default);

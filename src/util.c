@@ -10,6 +10,8 @@
 
 #include "util.h"
 
+static void flush_input_buffer(void);
+
 char *duplicate_string(const char *string)
 {
         size_t string_length = strlen(string) + 1;
@@ -122,12 +124,11 @@ FILE *open_file(const char *file_path, const char *mode)
         }
 }
 
-void flush_input_buffer(void)
+static void flush_input_buffer(void)
 {
         int ch;
 
         while ((ch = getchar()) != EOF && ch != '\n') {
-                continue;
         };
 
         if (ch == EOF) {
@@ -178,7 +179,7 @@ char *ingest_user_input(uint64_t initial_size)
         return input;
 }
 
-static char get_default_input(bool affirmative_default)
+static char get_affirmative_input(bool affirmative_default)
 {
         if (affirmative_default) {
                 return 'y';
@@ -189,7 +190,8 @@ static char get_default_input(bool affirmative_default)
 
 bool input_to_bool(const char *message, bool affirmative_default)
 {
-        char input;
+        int input;
+        char affirmative_input = get_affirmative_input(affirmative_default);
 
         print_user_message(message);
 
@@ -201,7 +203,13 @@ bool input_to_bool(const char *message, bool affirmative_default)
 
         input = tolower(fgetc(stdin));
 
-        if (input == '\n' || input == get_default_input(affirmative_default)) {
+        if (input != '\n') {
+                // Either 'y' or 'n' was entered manually so we need to
+                // get rid of the dangling '\n'
+                flush_input_buffer();
+        }
+
+        if (input == '\n' || input == affirmative_input) {
                 return affirmative_default;
         }
 

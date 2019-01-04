@@ -28,8 +28,6 @@ int add_command(void)
 
         bool use_defined = input_to_bool("Use defined state?", true);
 
-        flush_input_buffer();
-
         // TODO: Maybe move these into static functions
         if (use_defined) {
                 size_t user_choice;
