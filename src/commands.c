@@ -17,6 +17,9 @@ int add_command(void)
 {
         uint64_t priority;
         struct state_data *state = NULL;
+        char *subject;
+        char *description;
+        struct todo_data *todo = NULL;
 
         print_user_message("Priority (Ex. 1): ");
 
@@ -68,11 +71,17 @@ int add_command(void)
                 state = create_custom_state_data(is_active, custom_state);
         }
 
-        if (state->custom_state) {
-                printf("%s\n", state->string);
-        }
+        print_user_message("Enter a subject (Ex. Add a file): ");
 
-        destroy_state_data(state);
+        subject = ingest_user_input(50);
+
+        print_user_message("Enter a description (Ex. Add the make file): ");
+
+        description = ingest_user_input(100);
+
+        todo = create_todo_data(1, priority, state, subject, description);
+
+        die("Successfully saved %s", todo->subject);
 
         return EXIT_SUCCESS;
 }
