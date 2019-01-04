@@ -4,5 +4,6 @@
 
 #pragma once
 
+int add_command(void);
 void init_command(void);
 void version_command(void);

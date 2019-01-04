@@ -10,6 +10,8 @@
 
 #include "util.h"
 
+static void flush_input_buffer(void);
+
 char *duplicate_string(const char *string)
 {
         size_t string_length = strlen(string) + 1;
@@ -43,8 +45,7 @@ bool create_directory(const char *directory_name)
 {
         if (mkdir(directory_name, 0777) < 0) {
                 if (errno != EEXIST) {
-                        perror(directory_name);
-                        exit(EXIT_FAILURE);
+                        die("%s: %s", directory_name, strerror(errno));
                 }
 
                 return false;
@@ -53,10 +54,17 @@ bool create_directory(const char *directory_name)
         return true;
 }
 
-void create_file(const char *file_path, const char *mode)
+bool create_file(const char *file_path, const char *mode)
 {
         FILE *file = open_file(file_path, mode);
-        fclose(file);
+
+        if (file != NULL) {
+                fclose(file);
+
+                return true;
+        }
+
+        return false;
 }
 
 char *create_file_path(const char *directory_name, const char *filename)
@@ -71,7 +79,7 @@ char *create_file_path(const char *directory_name, const char *filename)
 
         strncpy(file_path, directory_name, directory_length);
         strncpy(file_path + directory_length, filename, file_length);
-        file_path[strlen(file_path)] = '\0';
+        file_path[directory_length + file_length] = '\0';
 
         return file_path;
 }
@@ -80,7 +88,7 @@ bool directory_exists(const char *directory_name)
 {
         DIR *directory = open_directory(directory_name);
 
-        if (!open_directory(directory_name)) {
+        if (!directory) {
                 return false;
         }
 
@@ -112,10 +120,115 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                perror("huh?");
-
                 die("Could not create %s", file_path);
         }
+}
+
+static void flush_input_buffer(void)
+{
+        int ch;
+
+        while ((ch = getchar()) != EOF && ch != '\n') {
+                continue;
+        };
+
+        if (ch == EOF) {
+                die("Failed to flush the input buffer");
+        }
+}
+
+char *ingest_user_input(uint64_t initial_size)
+{
+        const size_t max_reallocs = 10;
+        size_t reallocs = 0;
+
+        char ch;
+        size_t size = 0;
+        size_t buffer_size = initial_size;
+        char *input = malloc(buffer_size);
+
+        if (input == NULL) {
+                die("Could allocate space for user input");
+        }
+
+        while ((ch = getchar()) != EOF && ch != '\n') {
+                input[size++] = ch;
+
+                if (size == buffer_size && reallocs <= max_reallocs) {
+                        // User input is larger than current buffer size
+                        // double it
+                        buffer_size = size + initial_size;
+
+                        input = realloc(input, buffer_size);
+
+                        if (input == NULL) {
+                                die("Could not save user input to memory");
+                        }
+
+                        reallocs++;
+                }
+
+                if (reallocs == max_reallocs) {
+                        die("Invalid user input (Exceeded maximum length)");
+                }
+        }
+
+        if (ch == EOF) {
+                die("Could not read in user input");
+        }
+
+        input[size++] = '\0';
+
+        return input;
+}
+
+static char get_affirmative_input(bool affirmative_default)
+{
+        if (affirmative_default) {
+                return 'y';
+        }
+
+        return 'n';
+}
+
+bool input_to_bool(const char *message, bool affirmative_default)
+{
+        int input;
+        char affirmative_input = get_affirmative_input(affirmative_default);
+
+        print_user_message(message);
+
+        if (affirmative_default) {
+                fputs(" [Y,n] ", stdout);
+        } else {
+                fputs(" [y,N] ", stdout);
+        }
+
+        input = tolower(fgetc(stdin));
+
+        if (input != '\n') {
+                // Either 'y' or 'n' was entered manually so we need to
+                // get rid of the dangling '\n'
+                flush_input_buffer();
+        }
+
+        if (input == '\n' || input == affirmative_input) {
+                return affirmative_default;
+        }
+
+        return !affirmative_default;
+}
+
+bool validate_scan_result(int scan_result)
+{
+        // Clear any data left in the buffer from the call to scanf
+        flush_input_buffer();
+
+        if (scan_result != 1) {
+                return false;
+        }
+
+        return true;
 }
 
 void die(const char *format, ...)
@@ -123,9 +236,20 @@ void die(const char *format, ...)
         va_list vargs;
 
         va_start(vargs, format);
+        fputs("ERROR: ", stderr);
         vfprintf(stderr, format, vargs);
-        putchar('\n');
+        fputc('\n', stderr);
         va_end(vargs);
 
         exit(EXIT_FAILURE);
+}
+
+void print_user_message(const char *format, ...)
+{
+        va_list vargs;
+
+        va_start(vargs, format);
+        fputs(":: ", stdout);
+        vfprintf(stdout, format, vargs);
+        va_end(vargs);
 }
