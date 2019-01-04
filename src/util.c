@@ -10,8 +10,6 @@
 
 #include "util.h"
 
-static void flush_input_buffer(void);
-
 char *duplicate_string(const char *string)
 {
         size_t string_length = strlen(string) + 1;
@@ -124,7 +122,7 @@ FILE *open_file(const char *file_path, const char *mode)
         }
 }
 
-static void flush_input_buffer(void)
+void flush_input_buffer(void)
 {
         int ch;
 
@@ -154,7 +152,7 @@ char *ingest_user_input(uint64_t initial_size)
         while ((ch = getchar()) != EOF && ch != '\n') {
                 input[size++] = ch;
 
-                if (size == buffer_size || reallocs <= max_reallocs) {
+                if (size == buffer_size && reallocs <= max_reallocs) {
                         // User input is larger than current buffer size
                         // double it
                         buffer_size = size + initial_size;

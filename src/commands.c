@@ -28,6 +28,8 @@ int add_command(void)
 
         bool use_defined = input_to_bool("Use defined state?", true);
 
+        flush_input_buffer();
+
         // TODO: Maybe move these into static functions
         if (use_defined) {
                 size_t user_choice;
@@ -55,6 +57,16 @@ int add_command(void)
                 if (defined_state != INVALID) {
                         printf("%d", defined_state);
                 }
+        } else {
+                char *custom_state;
+
+                print_user_message("Enter a custom state: (Ex. Late): ");
+
+                custom_state = ingest_user_input(25);
+
+                printf("%s", custom_state);
+
+                free(custom_state);
         }
 
         return EXIT_SUCCESS;
