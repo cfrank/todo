@@ -129,6 +129,7 @@ static void flush_input_buffer(void)
         int ch;
 
         while ((ch = getchar()) != EOF && ch != '\n') {
+                continue;
         };
 
         if (ch == EOF) {

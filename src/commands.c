@@ -16,7 +16,7 @@
 int add_command(void)
 {
         uint64_t priority;
-        // struct state_data *state;
+        struct state_data *state = NULL;
 
         print_user_message("Priority (Ex. 1): ");
 
@@ -27,6 +27,8 @@ int add_command(void)
         }
 
         bool use_defined = input_to_bool("Use defined state?", true);
+        bool is_active
+                = input_to_bool("Do you want to mark this todo active?", true);
 
         // TODO: Maybe move these into static functions
         if (use_defined) {
@@ -53,7 +55,8 @@ int add_command(void)
                 defined_state = num_to_state_value(user_choice);
 
                 if (defined_state != INVALID) {
-                        printf("%d", defined_state);
+                        state = create_defined_state_data(is_active,
+                                                          defined_state);
                 }
         } else {
                 char *custom_state;
@@ -62,10 +65,14 @@ int add_command(void)
 
                 custom_state = ingest_user_input(25);
 
-                printf("%s", custom_state);
-
-                free(custom_state);
+                state = create_custom_state_data(is_active, custom_state);
         }
+
+        if (state->custom_state) {
+                printf("%s\n", state->string);
+        }
+
+        destroy_state_data(state);
 
         return EXIT_SUCCESS;
 }
