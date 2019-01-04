@@ -57,15 +57,38 @@ struct state_data *create_defined_state_data(bool active,
         return ret;
 }
 
+enum state_value num_to_state_value(size_t num)
+{
+        switch (num) {
+        case 0:
+                return OPEN;
+        case 1:
+                return IN_PROGRESS;
+        case 2:
+                return URGENT;
+        case 3:
+                return RESOLVED;
+        case 4:
+                return CLOSED;
+        case 5:
+                return RE_OPENED;
+        default:
+                return INVALID;
+        }
+}
+
 void print_state_values(void)
 {
-        // TODO: Might not be best solution since it assumes state values
-        // will always be continuous, but that seems like a sane idea right now
+        fputc('\n', stdout);
+
+        // TODO: Might not be best solution since it assumes state
+        // values will always be continuous, but that seems like a sane
+        // idea right now
         //
         // Also if a value is added after RE_OPENED then this breaks...
 
         for (size_t value = OPEN; value <= RE_OPENED; ++value) {
-                print_user_message(state_value_to_string(value));
+                printf("%s: (%zu)\n", state_value_to_string(value), value);
         }
 }
 

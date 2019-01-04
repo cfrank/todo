@@ -14,6 +14,7 @@ enum state_value {
         RESOLVED,
         CLOSED,
         RE_OPENED,
+        INVALID,
 };
 
 struct state_data {
@@ -40,6 +41,7 @@ struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
 struct state_data *create_custom_state_data(bool active, char *string);
 struct state_data *create_defined_state_data(bool active,
                                              enum state_value value);
+enum state_value num_to_state_value(size_t num);
 void print_state_values(void);
 const char *state_value_to_string(enum state_value value);
 

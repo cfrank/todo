@@ -28,8 +28,33 @@ int add_command(void)
 
         bool use_defined = input_to_bool("Use defined state?", true);
 
+        // TODO: Maybe move these into static functions
         if (use_defined) {
-                printf("%s", "Hello world!");
+                size_t user_choice;
+                enum state_value defined_state;
+
+                print_state_values();
+
+                fputc('\n', stdout);
+
+                print_user_message("State (Ex. 1): ");
+
+                int result = scanf("%zu", &user_choice);
+
+                if (!validate_scan_result(result)) {
+                        die("You entered an invalid state state id");
+                }
+
+                if (user_choice > RE_OPENED) {
+                        die("Please choose from the provided list of state "
+                            "ids");
+                }
+
+                defined_state = num_to_state_value(user_choice);
+
+                if (defined_state != INVALID) {
+                        printf("%d", defined_state);
+                }
         }
 
         return EXIT_SUCCESS;
