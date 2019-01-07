@@ -14,7 +14,8 @@ enum state_value {
         RESOLVED,
         CLOSED,
         RE_OPENED,
-        INVALID,
+        INVALID, // Any new state values should be added above this
+        STATE_COUNT, // Needs to be last - used to count number of state values
 };
 
 struct state_data {
