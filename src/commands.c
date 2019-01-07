@@ -37,8 +37,6 @@ static struct state_data *get_defined_state_data(bool is_active)
 
         defined_state = num_to_state_value(user_choice);
 
-        printf("%s\n", state_value_to_string(defined_state));
-
         if (defined_state != INVALID) {
                 return create_defined_state_data(is_active, defined_state);
         }
