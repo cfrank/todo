@@ -13,6 +13,48 @@
 #include "util.h"
 #include "version.h"
 
+static struct state_data *get_defined_state_data(bool is_active)
+{
+        size_t user_choice;
+        enum state_value defined_state;
+
+        print_state_values();
+
+        fputc('\n', stdout);
+
+        print_user_message("State (Ex. 1): ");
+
+        // TODO: Stop using scanf
+        int result = scanf("%zu", &user_choice);
+
+        if (!validate_scan_result(result)) {
+                die("You entered an invalid state id");
+        }
+
+        if (user_choice > RE_OPENED) {
+                die("Please choose from the provided list of state ids");
+        }
+
+        defined_state = num_to_state_value(user_choice);
+
+        if (defined_state != INVALID) {
+                return create_defined_state_data(is_active, defined_state);
+        }
+
+        return NULL;
+}
+
+static struct state_data *get_custom_state_data(bool is_active)
+{
+        char *custom_state;
+
+        print_user_message("Enter a custom state: (Ex. Late): ");
+
+        custom_state = ingest_user_input(25);
+
+        return create_custom_state_data(is_active, custom_state);
+}
+
 int add_command(void)
 {
         uint64_t priority;
@@ -30,45 +72,16 @@ int add_command(void)
         }
 
         bool use_defined = input_to_bool("Use defined state?", true);
-        bool is_active
-                = input_to_bool("Do you want to mark this todo active?", true);
+        bool is_active = input_to_bool("Mark this todo active?", true);
 
-        // TODO: Maybe move these into static functions
         if (use_defined) {
-                size_t user_choice;
-                enum state_value defined_state;
+                state = get_defined_state_data(is_active);
 
-                print_state_values();
-
-                fputc('\n', stdout);
-
-                print_user_message("State (Ex. 1): ");
-
-                int result = scanf("%zu", &user_choice);
-
-                if (!validate_scan_result(result)) {
-                        die("You entered an invalid state state id");
-                }
-
-                if (user_choice > RE_OPENED) {
-                        die("Please choose from the provided list of state "
-                            "ids");
-                }
-
-                defined_state = num_to_state_value(user_choice);
-
-                if (defined_state != INVALID) {
-                        state = create_defined_state_data(is_active,
-                                                          defined_state);
+                if (state == NULL) {
+                        die("Failed to get defined state");
                 }
         } else {
-                char *custom_state;
-
-                print_user_message("Enter a custom state: (Ex. Late): ");
-
-                custom_state = ingest_user_input(25);
-
-                state = create_custom_state_data(is_active, custom_state);
+                state = get_custom_state_data(is_active);
         }
 
         print_user_message("Enter a subject (Ex. Add a file): ");
