@@ -26,6 +26,50 @@ static const struct command_tuple command_list[COMMAND_COUNT] = {
         {UNKNOWN, "unknown"},
 };
 
+struct argument_list *create_argument_list(int argc, char **argv,
+                                           size_t start_index)
+{
+        if (start_index >= argc) {
+                die("Attempted to retrieve nonexistent command line argument");
+        }
+
+        struct argument_list *arg_list = NULL;
+
+        arg_list = malloc(sizeof(struct argument_list));
+
+        if (arg_list == NULL) {
+                die("Failed to allocate memory for argument list");
+        }
+
+        size_t req_arg_length = 0;
+        size_t req_arg_size = ((argc - 1) - start_index);
+        char *req_args[req_arg_size];
+
+        for (size_t i = start_index; i < argc; ++i) {
+                req_args[req_arg_length] = argv[i];
+                ++req_arg_length;
+        }
+
+        arg_list->arguments = malloc(sizeof(char *) * req_arg_length);
+
+        if (arg_list->arguments == NULL) {
+                die("Failed to store arguments in argument list");
+        }
+
+        memcpy(arg_list->arguments, req_args, sizeof(char *) * req_arg_length);
+
+        arg_list->length = req_arg_length;
+
+        return arg_list;
+}
+
+void destroy_argument_list(struct argument_list *arg_list)
+{
+        free(arg_list->arguments);
+
+        free(arg_list);
+}
+
 enum arg_command get_command(const char *command)
 {
         enum arg_command ret = UNKNOWN;

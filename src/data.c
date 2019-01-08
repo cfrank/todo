@@ -2,6 +2,7 @@
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "data.h"
@@ -24,7 +25,7 @@ static const struct defined_state_map defined_state_list[STATE_COUNT] = {
 
 static const size_t VALID_STATE_COUNT = STATE_COUNT - 1;
 
-struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
+struct todo_data *create_todo_data(char *id, uint64_t priority,
                                    struct state_data *state, char *subject,
                                    char *description)
 {
@@ -74,6 +75,11 @@ struct state_data *create_defined_state_data(bool active,
         return ret;
 }
 
+FILE *create_todo_data_file(char *id)
+{
+        return stdin;
+}
+
 enum state_value num_to_state_value(size_t num)
 {
         if (num > VALID_STATE_COUNT) {
@@ -90,7 +96,7 @@ void print_state_values(void)
         // For this function to work properly all the state values must be
         // continuous.
         for (size_t value = 0; value < VALID_STATE_COUNT; ++value) {
-                printf("%s: (%zu)\n", state_value_to_string(value), value);
+                printf("%s: (%zu)\n", defined_state_list[value].name, value);
         }
 }
 
