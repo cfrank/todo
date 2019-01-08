@@ -33,9 +33,7 @@ struct argument_list *create_argument_list(int argc, char **argv,
                 die("Attempted to retrieve nonexistent command line argument");
         }
 
-        struct argument_list *arg_list = NULL;
-
-        arg_list = malloc(sizeof(struct argument_list));
+        struct argument_list *arg_list = malloc(sizeof(struct argument_list));
 
         if (arg_list == NULL) {
                 die("Failed to allocate memory for argument list");
