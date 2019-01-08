@@ -41,24 +41,17 @@ struct argument_list *create_argument_list(int argc, char **argv,
                 die("Failed to allocate memory for argument list");
         }
 
-        size_t req_arg_length = 0;
-        size_t req_arg_size = ((argc - 1) - start_index);
-        char *req_args[req_arg_size];
-
-        for (size_t i = start_index; i < argc; ++i) {
-                req_args[req_arg_length] = argv[i];
-                ++req_arg_length;
-        }
-
-        arg_list->arguments = malloc(sizeof(char *) * req_arg_length);
+        arg_list->arguments = malloc(sizeof(char *) * (argc - 1) - start_index);
+        arg_list->length = 0;
 
         if (arg_list->arguments == NULL) {
-                die("Failed to store arguments in argument list");
+                die("Failed to store arguments in the argument list");
         }
 
-        memcpy(arg_list->arguments, req_args, sizeof(char *) * req_arg_length);
-
-        arg_list->length = req_arg_length;
+        for (size_t i = start_index; i < argc; ++i) {
+                arg_list->arguments[arg_list->length] = argv[i];
+                ++arg_list->length;
+        }
 
         return arg_list;
 }
