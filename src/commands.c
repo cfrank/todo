@@ -99,7 +99,11 @@ int add_command(int argc, char **argv)
 
         todo = create_todo_data(id, priority, state, subject, description);
 
-        print_user_message("Successfully saved '%s'\n", todo->id);
+        if (todo == NULL || todo->state == NULL) {
+                die("Could not allocate memory for todo data");
+        }
+
+        save_todo_data_to_file(todo);
 
         destroy_todo_data(todo);
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "constants.h"
 #include "data.h"
 #include "util.h"
 
@@ -29,7 +30,7 @@ struct todo_data *create_todo_data(char *id, uint64_t priority,
                                    struct state_data *state, char *subject,
                                    char *description)
 {
-        struct todo_data *ret = malloc(sizeof(struct state_data));
+        struct todo_data *ret = malloc(sizeof(struct todo_data));
 
         if (ret == NULL) {
                 return NULL;
@@ -53,7 +54,7 @@ struct state_data *create_custom_state_data(bool active, char *string)
         }
 
         ret->active = active;
-        ret->custom_state = true;
+        ret->is_custom = true;
         ret->string = string;
 
         return ret;
@@ -69,15 +70,19 @@ struct state_data *create_defined_state_data(bool active,
         }
 
         ret->active = active;
-        ret->custom_state = false;
+        ret->is_custom = false;
         ret->value = value;
 
         return ret;
 }
 
-FILE *create_todo_data_file(char *id)
+void save_todo_data_to_file(const struct todo_data *todo)
 {
-        return stdin;
+        print_user_message(todo->id);
+
+        char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
+
+        printf("%s", data_path);
 }
 
 enum state_value num_to_state_value(size_t num)
@@ -114,16 +119,8 @@ const char *state_value_to_string(enum state_value value)
 
 void destroy_todo_data(struct todo_data *todo)
 {
-        destroy_state_data(todo->state);
+        free(todo->state);
 
         free(todo);
 }
 
-void destroy_state_data(struct state_data *state)
-{
-        if (state->custom_state) {
-                free(state->string);
-        }
-
-        free(state);
-}
