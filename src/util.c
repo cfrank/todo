@@ -145,7 +145,7 @@ char *ingest_user_input(uint64_t initial_size)
         char ch;
         size_t size = 0;
         size_t buffer_size = initial_size;
-        char *input = malloc(buffer_size);
+        char *input = malloc(sizeof(char) * buffer_size);
 
         if (input == NULL) {
                 die("Could allocate space for user input");
