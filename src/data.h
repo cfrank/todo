@@ -20,7 +20,7 @@ enum state_value {
 
 struct state_data {
         bool active;
-        bool custom_state;
+        bool is_custom;
         union {
                 enum state_value value;
                 char *string;
@@ -28,19 +28,21 @@ struct state_data {
 };
 
 struct todo_data {
-        uint64_t id;
+        char *id;
         uint64_t priority;
         struct state_data *state;
         char *subject;
         char *description;
 };
 
-struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
+struct todo_data *create_todo_data(char *id, uint64_t priority,
                                    struct state_data *state, char *subject,
                                    char *description);
 struct state_data *create_custom_state_data(bool active, char *string);
 struct state_data *create_defined_state_data(bool active,
                                              enum state_value value);
+void save_todo_data_to_file(const struct todo_data *todo);
+
 enum state_value num_to_state_value(size_t num);
 void print_state_values(void);
 const char *state_value_to_string(enum state_value value);

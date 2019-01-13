@@ -7,11 +7,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "args.h"
 #include "commands.h"
 #include "constants.h"
 #include "data.h"
 #include "util.h"
 #include "version.h"
+
+static bool is_initialized(void)
+{
+        if (directory_exists(TODO_DIR_NAME)) {
+                return true;
+        }
+
+        return false;
+}
 
 static struct state_data *get_defined_state_data(bool is_active)
 {
@@ -51,13 +61,29 @@ static struct state_data *get_custom_state_data(bool is_active)
         return create_custom_state_data(is_active, custom_state);
 }
 
-int add_command(void)
+int add_command(int argc, char **argv)
 {
         uint64_t priority;
         struct state_data *state = NULL;
         char *subject;
         char *description;
         struct todo_data *todo = NULL;
+
+        if (!is_initialized()) {
+                die("You must first initialize todo before adding a todo");
+        }
+
+        struct argument_list *arg_list = create_argument_list(argc, argv, 2);
+
+        if (arg_list->length != 1) {
+                die("Invalid arguments supplied see 'todo help %s'",
+                    command_to_string(ADD));
+        }
+
+        // arguments points to a item in argv
+        char *id = arg_list->arguments[0];
+
+        destroy_argument_list(arg_list);
 
         print_user_message("Priority (Ex. 1): ");
 
@@ -84,9 +110,13 @@ int add_command(void)
 
         description = ingest_user_input(100);
 
-        todo = create_todo_data(1, priority, state, subject, description);
+        todo = create_todo_data(id, priority, state, subject, description);
 
-        print_user_message("Successfully saved '%s'\n", todo->subject);
+        if (todo == NULL || todo->state == NULL) {
+                die("Could not allocate memory for todo data");
+        }
+
+        save_todo_data_to_file(todo);
 
         destroy_todo_data(todo);
 
@@ -95,18 +125,16 @@ int add_command(void)
 
 void init_command(void)
 {
-        if (!create_directory(TODO_DIR_NAME)) {
-                // Directory already exists
+        if (is_initialized()) {
                 die("You cannot re-initialize todo");
         }
 
-        char *file_path = create_file_path(TODO_DIR_NAME, "todos.data");
-
-        if (!create_file(file_path, "ab+")) {
-                die("Failed to create todo data file");
+        if (!create_directory(TODO_DIR_NAME)) {
+                die("Failed to initialize todo");
         }
 
-        free(file_path);
+        print_user_message("Successfully initialized todo in %s\n",
+                           TODO_DIR_NAME);
 }
 
 void version_command(void)

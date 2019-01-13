@@ -2,8 +2,10 @@
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
+#include <stdio.h>
 #include <stdlib.h>
 
+#include "constants.h"
 #include "data.h"
 #include "util.h"
 
@@ -24,11 +26,11 @@ static const struct defined_state_map defined_state_list[STATE_COUNT] = {
 
 static const size_t VALID_STATE_COUNT = STATE_COUNT - 1;
 
-struct todo_data *create_todo_data(uint64_t id, uint64_t priority,
+struct todo_data *create_todo_data(char *id, uint64_t priority,
                                    struct state_data *state, char *subject,
                                    char *description)
 {
-        struct todo_data *ret = malloc(sizeof(struct state_data));
+        struct todo_data *ret = malloc(sizeof(struct todo_data));
 
         if (ret == NULL) {
                 return NULL;
@@ -52,7 +54,7 @@ struct state_data *create_custom_state_data(bool active, char *string)
         }
 
         ret->active = active;
-        ret->custom_state = true;
+        ret->is_custom = true;
         ret->string = string;
 
         return ret;
@@ -68,10 +70,23 @@ struct state_data *create_defined_state_data(bool active,
         }
 
         ret->active = active;
-        ret->custom_state = false;
+        ret->is_custom = false;
         ret->value = value;
 
         return ret;
+}
+
+void save_todo_data_to_file(const struct todo_data *todo)
+{
+        print_user_message(todo->id);
+
+        char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
+
+        FILE *data_file = open_file(data_path, "ab+");
+
+        fclose(data_file);
+
+        free(data_path);
 }
 
 enum state_value num_to_state_value(size_t num)
@@ -90,7 +105,7 @@ void print_state_values(void)
         // For this function to work properly all the state values must be
         // continuous.
         for (size_t value = 0; value < VALID_STATE_COUNT; ++value) {
-                printf("%s: (%zu)\n", state_value_to_string(value), value);
+                printf("%s: (%zu)\n", defined_state_list[value].name, value);
         }
 }
 
@@ -108,16 +123,13 @@ const char *state_value_to_string(enum state_value value)
 
 void destroy_todo_data(struct todo_data *todo)
 {
-        destroy_state_data(todo->state);
+        if (todo->state->is_custom) {
+                free(todo->state->string);
+        }
 
+        free(todo->state);
+        free(todo->subject);
+        free(todo->description);
         free(todo);
 }
 
-void destroy_state_data(struct state_data *state)
-{
-        if (state->custom_state) {
-                free(state->string);
-        }
-
-        free(state);
-}

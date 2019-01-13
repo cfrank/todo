@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "util.h"
 
@@ -84,15 +85,12 @@ char *create_file_path(const char *directory_name, const char *filename)
         return file_path;
 }
 
-bool directory_exists(const char *directory_name)
+bool directory_exists(const char *directory_path)
 {
-        DIR *directory = open_directory(directory_name);
-
-        if (!directory) {
+        if (access(directory_path, F_OK) != 0) {
                 return false;
         }
 
-        closedir(directory);
         return true;
 }
 
@@ -120,7 +118,7 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                die("Could not create %s", file_path);
+                die("Could not create %s - %s", file_path, strerror(errno));
         }
 }
 
