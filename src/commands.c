@@ -14,6 +14,15 @@
 #include "util.h"
 #include "version.h"
 
+static bool is_initialized(void)
+{
+        if (directory_exists(TODO_DIR_NAME)) {
+                return true;
+        }
+
+        return false;
+}
+
 static struct state_data *get_defined_state_data(bool is_active)
 {
         size_t user_choice;
@@ -59,6 +68,10 @@ int add_command(int argc, char **argv)
         char *subject;
         char *description;
         struct todo_data *todo = NULL;
+
+        if (!is_initialized()) {
+                die("You must first initialize todo before adding a todo");
+        }
 
         struct argument_list *arg_list = create_argument_list(argc, argv, 2);
 
@@ -112,9 +125,12 @@ int add_command(int argc, char **argv)
 
 void init_command(void)
 {
-        if (!create_directory(TODO_DIR_NAME)) {
-                // Directory already exists
+        if (is_initialized()) {
                 die("You cannot re-initialize todo");
+        }
+
+        if (!create_directory(TODO_DIR_NAME)) {
+                die("Failed to initialize todo");
         }
 
         print_user_message("Successfully initialized todo in %s\n",
