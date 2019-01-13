@@ -118,7 +118,7 @@ FILE *open_file(const char *file_path, const char *mode)
                         continue;
                 }
 
-                die("Could not create %s", file_path);
+                die("Could not create %s - %s", file_path, strerror(errno));
         }
 }
 

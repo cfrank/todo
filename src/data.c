@@ -82,7 +82,9 @@ void save_todo_data_to_file(const struct todo_data *todo)
 
         char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
 
-        printf("%s", data_path);
+        FILE *data_file = open_file(data_path, "ab+");
+
+        fclose(data_file);
 
         free(data_path);
 }
