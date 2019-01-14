@@ -16,7 +16,7 @@
 
 static bool is_initialized(void)
 {
-        if (directory_exists(TODO_DIR_NAME)) {
+        if (path_exists(TODO_DIR_NAME)) {
                 return true;
         }
 

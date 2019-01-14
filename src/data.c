@@ -1,7 +1,8 @@
-// Copyright 2018 Chris Frank
+/// Copyright 2018 Chris Frank
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -83,6 +84,17 @@ void save_todo_data_to_file(const struct todo_data *todo)
         char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
 
         FILE *data_file = open_file(data_path, "ab+");
+
+        fprintf(data_file, "%d\n", todo->state->is_custom);
+        fprintf(data_file, "%s;%" PRIu64 ";", todo->id, todo->priority);
+
+        if (todo->state->is_custom) {
+                fprintf(data_file, "%s;", todo->state->string);
+        } else {
+                fprintf(data_file, "%d;", todo->state->value);
+        }
+
+        fprintf(data_file, "%s;%s", todo->subject, todo->description);
 
         fclose(data_file);
 

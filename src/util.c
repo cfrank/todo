@@ -85,9 +85,9 @@ char *create_file_path(const char *directory_name, const char *filename)
         return file_path;
 }
 
-bool directory_exists(const char *directory_path)
+bool path_exists(const char *path)
 {
-        if (access(directory_path, F_OK) != 0) {
+        if (access(path, F_OK) != 0) {
                 return false;
         }
 
