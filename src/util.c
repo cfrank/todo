@@ -42,17 +42,38 @@ char *convert_string_to_lowercase(const char *string)
         return lowercase_string;
 }
 
-bool create_directory(const char *directory_name)
+bool create_directory(const char *directory_path)
 {
-        if (mkdir(directory_name, 0777) < 0) {
+        if (mkdir(directory_path, 0777) < 0) {
                 if (errno != EEXIST) {
-                        die("%s: %s", directory_name, strerror(errno));
+                        die("%s: %s", directory_path, strerror(errno));
                 }
 
                 return false;
         }
 
         return true;
+}
+
+void directory_iterator(const char *directory_path, file_callback_t callback)
+{
+        DIR *stream = opendir(directory_path);
+
+        if (stream == NULL) {
+                die("Failed to list %s: %s", directory_path, strerror(errno));
+        }
+
+        struct dirent *directory;
+
+        while ((directory = readdir(stream)) != NULL) {
+                callback(directory);
+        }
+
+        if (errno == EBADF) {
+                die("Failed to read todos from directory stream");
+        }
+
+        closedir(stream);
 }
 
 bool create_file(const char *file_path, const char *mode)
@@ -68,9 +89,9 @@ bool create_file(const char *file_path, const char *mode)
         return false;
 }
 
-char *create_file_path(const char *directory_name, const char *filename)
+char *create_file_path(const char *directory_path, const char *filename)
 {
-        size_t directory_length = strlen(directory_name);
+        size_t directory_length = strlen(directory_path);
         size_t file_length = strlen(filename);
         char *file_path = malloc((directory_length + file_length) + 1);
 
@@ -78,7 +99,7 @@ char *create_file_path(const char *directory_name, const char *filename)
                 die("Could not create file path for %s", filename);
         }
 
-        strncpy(file_path, directory_name, directory_length);
+        strncpy(file_path, directory_path, directory_length);
         strncpy(file_path + directory_length, filename, file_length);
         file_path[directory_length + file_length] = '\0';
 
@@ -94,9 +115,9 @@ bool path_exists(const char *path)
         return true;
 }
 
-DIR *open_directory(const char *directory_name)
+DIR *open_directory(const char *directory_path)
 {
-        DIR *directory = opendir(directory_name);
+        DIR *directory = opendir(directory_path);
 
         if (directory) {
                 return directory;

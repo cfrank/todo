@@ -3,9 +3,13 @@
 // Refer to the license.txt file included in the root of the project
 
 #include <dirent.h>
+#include <errno.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "args.h"
 #include "commands.h"
@@ -14,13 +18,15 @@
 #include "util.h"
 #include "version.h"
 
-static bool is_initialized(void)
+static struct state_data *get_custom_state_data(bool is_active)
 {
-        if (path_exists(TODO_DIR_NAME)) {
-                return true;
-        }
+        char *custom_state;
 
-        return false;
+        print_user_message("Enter a custom state: (Ex. Late): ");
+
+        custom_state = ingest_user_input(25);
+
+        return create_custom_state_data(is_active, custom_state);
 }
 
 static struct state_data *get_defined_state_data(bool is_active)
@@ -50,15 +56,13 @@ static struct state_data *get_defined_state_data(bool is_active)
         return create_defined_state_data(is_active, defined_state);
 }
 
-static struct state_data *get_custom_state_data(bool is_active)
+static bool is_initialized(void)
 {
-        char *custom_state;
+        if (path_exists(TODO_DIR_NAME)) {
+                return true;
+        }
 
-        print_user_message("Enter a custom state: (Ex. Late): ");
-
-        custom_state = ingest_user_input(25);
-
-        return create_custom_state_data(is_active, custom_state);
+        return false;
 }
 
 int add_command(int argc, char **argv)
@@ -135,6 +139,27 @@ void init_command(void)
 
         print_user_message("Successfully initialized todo in %s\n",
                            TODO_DIR_NAME);
+}
+
+static void print_todo_info(const struct dirent *entry)
+{
+        struct stat sb;
+        char *path = create_file_path(TODO_DIR_NAME, entry->d_name);
+
+        if (stat(path, &sb) == -1) {
+                die("%s: %s", strerror(errno), entry->d_name);
+        }
+
+        free(path);
+
+        if (S_ISREG(sb.st_mode)) {
+                print_user_message("%s\n", entry->d_name);
+        }
+}
+
+void list_command(void)
+{
+        directory_iterator(TODO_DIR_NAME, print_todo_info);
 }
 
 void version_command(void)

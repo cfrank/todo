@@ -41,7 +41,7 @@ int main(int argc, char **argv)
                 init_command();
                 break;
         case LIST:
-                printf("List...");
+                list_command();
                 break;
         case VERSION:
                 version_command();

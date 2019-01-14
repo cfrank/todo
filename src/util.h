@@ -10,16 +10,19 @@
 #include <stdint.h>
 #include <stdio.h>
 
+typedef void (*file_callback_t)(const struct dirent *entry);
+
 // String utilities
 char *duplicate_string(const char *string);
 char *convert_string_to_lowercase(const char *string);
 
 // Filesystem utilities
 bool create_file(const char *file, const char *mode);
-char *create_file_path(const char *directory_name, const char *filename);
-bool create_directory(const char *directory_name);
-bool path_exists(const char *_path);
-DIR *open_directory(const char *directory_name);
+char *create_file_path(const char *directory_path, const char *filename);
+bool create_directory(const char *directory_path);
+void directory_iterator(const char *directory_path, file_callback_t callback);
+bool path_exists(const char *path);
+DIR *open_directory(const char *directory_path);
 FILE *open_file(const char *file, const char *mode);
 
 // Input utilities
