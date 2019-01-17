@@ -178,7 +178,7 @@ ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
                 return -1;
         }
 
-        *buffer_pos = '\9';
+        *buffer_pos = '\0';
 
         return buffer_pos - *buffer;
 }
