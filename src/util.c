@@ -115,6 +115,52 @@ bool path_exists(const char *path)
         return true;
 }
 
+ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
+                               const FILE *file, bool consume)
+{
+        char ch;
+        char *pos;
+
+        if (buffer == NULL || size == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
+
+        if (buffer == NULL || *size == 0) {
+                *size = 128;
+                *buffer = malloc(*size);
+
+                if (*buffer == NULL) {
+                        errno = ENOMEM;
+                        return -1;
+                }
+        }
+
+        pos = *buffer;
+
+        for (;;) {
+                c = getc(file);
+
+                if (ferror(file) || (c == EOF && pos == *buffer)) {
+                        return -1;
+                }
+
+                if (c == EOF) {
+                        break;
+                }
+
+                *pos++ = c;
+
+                if (c == deliminator) {
+                        break;
+                }
+        }
+
+        *pos = '\0';
+
+        return (ssize_t)(pos - *buffer);
+}
+
 DIR *open_directory(const char *directory_path)
 {
         DIR *directory = opendir(directory_path);
@@ -156,7 +202,7 @@ static void flush_input_buffer(void)
         }
 }
 
-char *ingest_user_input(uint64_t initial_size)
+char *ingest_user_input(size_t initial_size)
 {
         const size_t max_reallocs = 10;
         size_t reallocs = 0;

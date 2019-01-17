@@ -141,25 +141,33 @@ void init_command(void)
                            TODO_DIR_NAME);
 }
 
-static void print_todo_info(const struct dirent *entry)
+static void file_callback(const struct dirent *entry)
 {
-        struct stat sb;
         char *path = create_file_path(TODO_DIR_NAME, entry->d_name);
+        struct stat sb;
 
         if (stat(path, &sb) == -1) {
                 die("%s: %s", strerror(errno), entry->d_name);
         }
 
-        free(path);
-
         if (S_ISREG(sb.st_mode)) {
-                print_user_message("%s\n", entry->d_name);
+                FILE *todo_file = open_file(path, "r");
+
+                if (todo_file == NULL) {
+                        die("Could read todo data file for: %s", entry->d_name);
+                }
+
+                read_todo_from_file(todo_file);
+
+                fclose(todo_file);
         }
+
+        free(path);
 }
 
 void list_command(void)
 {
-        directory_iterator(TODO_DIR_NAME, print_todo_info);
+        directory_iterator(TODO_DIR_NAME, file_callback);
 }
 
 void version_command(void)

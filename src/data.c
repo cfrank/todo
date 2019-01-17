@@ -83,7 +83,7 @@ void save_todo_data_to_file(const struct todo_data *todo)
 
         char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
 
-        FILE *data_file = open_file(data_path, "ab+");
+        FILE *data_file = open_file(data_path, "a+");
 
         fprintf(data_file, "%d\n", todo->state->is_custom);
         fprintf(data_file, "%s;%" PRIu64 ";", todo->id, todo->priority);
@@ -99,6 +99,11 @@ void save_todo_data_to_file(const struct todo_data *todo)
         fclose(data_file);
 
         free(data_path);
+}
+
+struct todo_data *read_todo_from_file(const FILE *todo_file)
+{
+        return NULL;
 }
 
 enum state_value num_to_state_value(size_t num)

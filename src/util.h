@@ -22,11 +22,13 @@ char *create_file_path(const char *directory_path, const char *filename);
 bool create_directory(const char *directory_path);
 void directory_iterator(const char *directory_path, file_callback_t callback);
 bool path_exists(const char *path);
+ssize_t read_line_from_file(char **buffer, size_t *size, const FILE *file,
+                            bool consume);
 DIR *open_directory(const char *directory_path);
 FILE *open_file(const char *file, const char *mode);
 
 // Input utilities
-char *ingest_user_input(uint64_t initial_size);
+char *ingest_user_input(size_t initial_size);
 bool input_to_bool(const char *message, bool affirmative_default);
 bool validate_scan_result(int scan_result);
 

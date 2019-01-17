@@ -42,6 +42,7 @@ struct state_data *create_custom_state_data(bool active, char *string);
 struct state_data *create_defined_state_data(bool active,
                                              enum state_value value);
 void save_todo_data_to_file(const struct todo_data *todo);
+struct todo_data *read_todo_from_file(const FILE *file_file);
 
 enum state_value num_to_state_value(size_t num);
 void print_state_values(void);
