@@ -166,7 +166,7 @@ ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
                 if (ch == deliminator) {
                         if (!consume) {
                                 // If not consuming delim roll back buffer
-                                *buffer_pos--;
+                                buffer_pos--;
                         }
 
                         break;
