@@ -116,17 +116,18 @@ bool path_exists(const char *path)
 }
 
 ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
-                               const FILE *file, bool consume)
+                               FILE *file, bool consume)
 {
         char ch;
-        char *pos;
+        char *buffer_pos;
 
-        if (buffer == NULL || size == NULL) {
+        if (buffer == NULL || size == NULL || ferror(file)) {
                 errno = EINVAL;
                 return -1;
         }
 
         if (buffer == NULL || *size == 0) {
+                // Empty buffer supplied
                 *size = 128;
                 *buffer = malloc(*size);
 
@@ -136,29 +137,50 @@ ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
                 }
         }
 
-        pos = *buffer;
+        buffer_pos = *buffer;
 
         for (;;) {
-                c = getc(file);
+                ch = getc(file);
 
-                if (ferror(file) || (c == EOF && pos == *buffer)) {
-                        return -1;
-                }
-
-                if (c == EOF) {
+                if (ch == EOF) {
                         break;
                 }
 
-                *pos++ = c;
+                if ((buffer_pos + 1) == (*buffer + *size)) {
+                        // No more room in buffer
+                        size_t new_size = *size * 2;
+                        char *realloc_buffer = realloc(*buffer, new_size);
 
-                if (c == deliminator) {
+                        if (realloc_buffer == NULL) {
+                                errno = ENOMEM;
+                                return -1;
+                        }
+
+                        buffer_pos = realloc_buffer + (buffer_pos - *buffer);
+                        *buffer = realloc_buffer;
+                        *size = new_size;
+                }
+
+                *buffer_pos++ = ch;
+
+                if (ch == deliminator) {
+                        if (!consume) {
+                                // If not consuming delim roll back buffer
+                                *buffer_pos--;
+                        }
+
                         break;
                 }
         }
 
-        *pos = '\0';
+        if (ch == EOF && buffer_pos == *buffer) {
+                // Nothing was read
+                return -1;
+        }
 
-        return (ssize_t)(pos - *buffer);
+        *buffer_pos = '\9';
+
+        return buffer_pos - *buffer;
 }
 
 DIR *open_directory(const char *directory_path)
