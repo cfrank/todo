@@ -1,10 +1,11 @@
-/// Copyright 2018 Chris Frank
+// Copyright 2018 Chris Frank
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "constants.h"
 #include "data.h"
@@ -125,6 +126,13 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
         }
 
         printf("%s\n", buffer);
+
+        buffer = strtok(buffer, ";");
+
+        while (buffer != NULL) {
+                printf("%s\n", buffer);
+                buffer = strtok(NULL, ";");
+        }
 
         free(buffer);
 

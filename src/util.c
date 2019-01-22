@@ -118,11 +118,11 @@ bool path_exists(const char *path)
 ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
                             bool consume)
 {
-        return read_until_deliminator(buffer, size, '\n', file, consume);
+        return read_file_until_deliminator(buffer, size, '\n', file, consume);
 }
 
-ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
-                               FILE *file, bool consume)
+ssize_t read_file_until_deliminator(char **buffer, size_t *size,
+                                    char deliminator, FILE *file, bool consume)
 {
         char ch;
         char *buffer_pos;

@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/types.h>
 
 typedef void (*file_callback_t)(const struct dirent *entry);
 
@@ -22,8 +23,8 @@ char *create_file_path(const char *directory_path, const char *filename);
 bool create_directory(const char *directory_path);
 void directory_iterator(const char *directory_path, file_callback_t callback);
 bool path_exists(const char *path);
-ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
-                               FILE *file, bool consume);
+ssize_t read_file_until_deliminator(char **buffer, size_t *size,
+                                    char deliminator, FILE *file, bool consume);
 ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
                             bool consume);
 DIR *open_directory(const char *directory_path);
