@@ -159,10 +159,16 @@ static void file_callback(const struct dirent *entry)
 
                 struct todo_data *todo = read_todo_from_file(todo_file);
 
-                printf("%s - %s - %s\n",
-                       todo->id,
-                       todo->subject,
-                       todo->description);
+                printf("%s %10" PRIu64 "", todo->id, todo->priority);
+
+                if (todo->state->is_custom) {
+                        printf("%10s", todo->state->string);
+                } else {
+                        printf("%10s",
+                               state_value_to_string(todo->state->value));
+                }
+
+                printf("%10s\n", todo->subject);
 
                 destroy_todo_data(todo);
 
@@ -174,6 +180,7 @@ static void file_callback(const struct dirent *entry)
 
 void list_command(void)
 {
+        printf("%s %10s %10s %10s\n", "Id.", "Prior.", "State", "Subject");
         directory_iterator(TODO_DIR_NAME, file_callback);
 }
 
