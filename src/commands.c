@@ -157,7 +157,14 @@ static void file_callback(const struct dirent *entry)
                         die("Could read todo data file for: %s", entry->d_name);
                 }
 
-                read_todo_from_file(todo_file);
+                struct todo_data *todo = read_todo_from_file(todo_file);
+
+                printf("%s - %s - %s\n",
+                       todo->id,
+                       todo->subject,
+                       todo->description);
+
+                destroy_todo_data(todo);
 
                 fclose(todo_file);
         }

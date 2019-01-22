@@ -107,9 +107,16 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
         ssize_t result = 0;
         size_t buffer_size = 256;
         char *buffer = malloc(buffer_size);
+        char *segment;
 
         // Todo Properties
+        struct todo_data *todo = NULL;
         bool is_custom;
+        char *id;
+        uint64_t priority;
+        struct state_data *state = NULL;
+        char *subject;
+        char *description;
 
         result = read_line_from_file(&buffer, &buffer_size, todo_file, false);
 
@@ -125,18 +132,68 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
                 goto return_err;
         }
 
-        printf("%s\n", buffer);
+        // Get id
+        segment = strtok(buffer, ";");
 
-        buffer = strtok(buffer, ";");
-
-        while (buffer != NULL) {
-                printf("%s\n", buffer);
-                buffer = strtok(NULL, ";");
+        if (segment == NULL) {
+                goto return_err;
         }
+
+        id = strdup(buffer);
+
+        // Get priority
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        priority = (uint64_t)strtol(segment, NULL, 10);
+
+        // Get state data
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        if (is_custom) {
+                char *state_string = strdup(segment);
+                state = create_custom_state_data(true, state_string);
+
+                state->is_custom = is_custom;
+        } else {
+                size_t value = (size_t)strtol(segment, NULL, 10);
+                enum state_value defined_state = num_to_state_value(value);
+
+                state = create_defined_state_data(true, defined_state);
+
+                state->is_custom = is_custom;
+        }
+
+        // Get the subject
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        subject = strdup(segment);
+
+        // Get the description
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        description = strdup(segment);
+
+        todo = create_todo_data(id, priority, state, subject, description);
 
         free(buffer);
 
-        return NULL;
+        return todo;
 
 return_err:
         free(buffer);
@@ -162,7 +219,8 @@ void print_state_values(void)
         // For this function to work properly all the state values must be
         // continuous.
         for (size_t value = 0; value < VALID_STATE_COUNT; ++value) {
-                printf("%s: (%zu)\n", defined_state_list[value].name, value);
+                print_user_message(
+                        "%s: (%zu)\n", defined_state_list[value].name, value);
         }
 }
 
@@ -184,6 +242,7 @@ void destroy_todo_data(struct todo_data *todo)
                 free(todo->state->string);
         }
 
+        free(todo->id);
         free(todo->state);
         free(todo->subject);
         free(todo->description);
