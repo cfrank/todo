@@ -101,8 +101,40 @@ void save_todo_data_to_file(const struct todo_data *todo)
         free(data_path);
 }
 
-struct todo_data *read_todo_from_file(const FILE *todo_file)
+struct todo_data *read_todo_from_file(FILE *todo_file)
 {
+        ssize_t result = 0;
+        size_t buffer_size = 256;
+        char *buffer = malloc(buffer_size);
+
+        // Todo Properties
+        bool is_custom;
+
+        result = read_line_from_file(&buffer, &buffer_size, todo_file, false);
+
+        if (result <= 0) {
+                goto return_err;
+        }
+
+        is_custom = (bool)strtol(buffer, NULL, 10);
+
+        result = read_line_from_file(&buffer, &buffer_size, todo_file, false);
+
+        if (result <= 0) {
+                goto return_err;
+        }
+
+        printf("%s\n", buffer);
+
+        free(buffer);
+
+        return NULL;
+
+return_err:
+        free(buffer);
+
+        die("Failed to read todo data from file");
+
         return NULL;
 }
 

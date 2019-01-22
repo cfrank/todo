@@ -24,6 +24,8 @@ void directory_iterator(const char *directory_path, file_callback_t callback);
 bool path_exists(const char *path);
 ssize_t read_until_deliminator(char **buffer, size_t *size, char deliminator,
                                FILE *file, bool consume);
+ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
+                            bool consume);
 DIR *open_directory(const char *directory_path);
 FILE *open_file(const char *file, const char *mode);
 
