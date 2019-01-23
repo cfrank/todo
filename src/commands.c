@@ -179,7 +179,12 @@ static void file_callback(const struct dirent *entry)
 
 void list_command(void)
 {
+        if (!is_initialized()) {
+                die("You must first initialize todo before adding a todo");
+        }
+
         printf("%-10s%-10s%-20s%s\n", "Id.", "Prior.", "State", "Subject");
+
         directory_iterator(TODO_DIR_NAME, file_callback);
 }
 
