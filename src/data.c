@@ -106,8 +106,12 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
 {
         ssize_t result = 0;
         size_t buffer_size = 256;
-        char *buffer = malloc(buffer_size);
         char *segment;
+        char *buffer = malloc(buffer_size);
+
+        if (buffer == NULL) {
+                die("Failed to allocate memory needed to read file");
+        }
 
         // Todo Properties
         struct todo_data *todo = NULL;
