@@ -2,14 +2,13 @@
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
-#include <dirent.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include "args.h"
 #include "commands.h"

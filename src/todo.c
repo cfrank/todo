@@ -2,7 +2,6 @@
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "args.h"
