@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 enum arg_command {
         ADD,
         CREATE,

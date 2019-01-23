@@ -2,10 +2,13 @@
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
-#include <dirent.h>
+#include <errno.h>
 #include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 #include "args.h"
 #include "commands.h"
@@ -14,13 +17,15 @@
 #include "util.h"
 #include "version.h"
 
-static bool is_initialized(void)
+static struct state_data *get_custom_state_data(bool is_active)
 {
-        if (path_exists(TODO_DIR_NAME)) {
-                return true;
-        }
+        char *custom_state;
 
-        return false;
+        print_user_message("Enter a custom state: (Ex. Late): ");
+
+        custom_state = ingest_user_input(25);
+
+        return create_custom_state_data(is_active, custom_state);
 }
 
 static struct state_data *get_defined_state_data(bool is_active)
@@ -50,15 +55,13 @@ static struct state_data *get_defined_state_data(bool is_active)
         return create_defined_state_data(is_active, defined_state);
 }
 
-static struct state_data *get_custom_state_data(bool is_active)
+static bool is_initialized(void)
 {
-        char *custom_state;
+        if (path_exists(TODO_DIR_NAME)) {
+                return true;
+        }
 
-        print_user_message("Enter a custom state: (Ex. Late): ");
-
-        custom_state = ingest_user_input(25);
-
-        return create_custom_state_data(is_active, custom_state);
+        return false;
 }
 
 int add_command(int argc, char **argv)
@@ -81,7 +84,7 @@ int add_command(int argc, char **argv)
         }
 
         // arguments points to a item in argv
-        char *id = arg_list->arguments[0];
+        char *id = strdup(arg_list->arguments[0]);
 
         destroy_argument_list(arg_list);
 
@@ -135,6 +138,54 @@ void init_command(void)
 
         print_user_message("Successfully initialized todo in %s\n",
                            TODO_DIR_NAME);
+}
+
+static void file_callback(const struct dirent *entry)
+{
+        char *path = create_file_path(TODO_DIR_NAME, entry->d_name);
+        struct stat sb;
+
+        if (stat(path, &sb) == -1) {
+                die("%s: %s", strerror(errno), entry->d_name);
+        }
+
+        if (S_ISREG(sb.st_mode)) {
+                FILE *todo_file = open_file(path, "r");
+
+                if (todo_file == NULL) {
+                        die("Could read todo data file for: %s", entry->d_name);
+                }
+
+                struct todo_data *todo = read_todo_from_file(todo_file);
+
+                printf("%-10s%-10" PRIu64, todo->id, todo->priority);
+
+                if (todo->state->is_custom) {
+                        printf("%-20s", todo->state->string);
+                } else {
+                        printf("%-20s",
+                               state_value_to_string(todo->state->value));
+                }
+
+                printf("%s\n", todo->subject);
+
+                destroy_todo_data(todo);
+
+                fclose(todo_file);
+        }
+
+        free(path);
+}
+
+void list_command(void)
+{
+        if (!is_initialized()) {
+                die("You must first initialize todo before adding a todo");
+        }
+
+        printf("%-10s%-10s%-20s%s\n", "Id.", "Prior.", "State", "Subject");
+
+        directory_iterator(TODO_DIR_NAME, file_callback);
 }
 
 void version_command(void)

@@ -1,10 +1,11 @@
-/// Copyright 2018 Chris Frank
+// Copyright 2018 Chris Frank
 // Licensed under BSD-3-Clause
 // Refer to the license.txt file included in the root of the project
 
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "constants.h"
 #include "data.h"
@@ -83,7 +84,7 @@ void save_todo_data_to_file(const struct todo_data *todo)
 
         char *data_path = create_file_path(TODO_DIR_NAME, todo->id);
 
-        FILE *data_file = open_file(data_path, "ab+");
+        FILE *data_file = open_file(data_path, "a+");
 
         fprintf(data_file, "%d\n", todo->state->is_custom);
         fprintf(data_file, "%s;%" PRIu64 ";", todo->id, todo->priority);
@@ -99,6 +100,111 @@ void save_todo_data_to_file(const struct todo_data *todo)
         fclose(data_file);
 
         free(data_path);
+}
+
+struct todo_data *read_todo_from_file(FILE *todo_file)
+{
+        ssize_t result = 0;
+        size_t buffer_size = 256;
+        char *segment;
+        char *buffer = malloc(buffer_size);
+
+        if (buffer == NULL) {
+                die("Failed to allocate memory needed to read file");
+        }
+
+        // Todo Properties
+        struct todo_data *todo = NULL;
+        bool is_custom;
+        char *id;
+        uint64_t priority;
+        struct state_data *state = NULL;
+        char *subject;
+        char *description;
+
+        result = read_line_from_file(&buffer, &buffer_size, todo_file, false);
+
+        if (result <= 0) {
+                goto return_err;
+        }
+
+        is_custom = (bool)strtol(buffer, NULL, 10);
+
+        result = read_line_from_file(&buffer, &buffer_size, todo_file, false);
+
+        if (result <= 0) {
+                goto return_err;
+        }
+
+        // Get id
+        segment = strtok(buffer, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        id = strdup(buffer);
+
+        // Get priority
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        priority = (uint64_t)strtol(segment, NULL, 10);
+
+        // Get state data
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        if (is_custom) {
+                char *state_string = strdup(segment);
+                state = create_custom_state_data(true, state_string);
+
+                state->is_custom = is_custom;
+        } else {
+                size_t value = (size_t)strtol(segment, NULL, 10);
+                enum state_value defined_state = num_to_state_value(value);
+
+                state = create_defined_state_data(true, defined_state);
+
+                state->is_custom = is_custom;
+        }
+
+        // Get the subject
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        subject = strdup(segment);
+
+        // Get the description
+        segment = strtok(NULL, ";");
+
+        if (segment == NULL) {
+                goto return_err;
+        }
+
+        description = strdup(segment);
+
+        todo = create_todo_data(id, priority, state, subject, description);
+
+        free(buffer);
+
+        return todo;
+
+return_err:
+        free(buffer);
+
+        die("Failed to read todo data from file");
+
+        return NULL;
 }
 
 enum state_value num_to_state_value(size_t num)
@@ -117,7 +223,8 @@ void print_state_values(void)
         // For this function to work properly all the state values must be
         // continuous.
         for (size_t value = 0; value < VALID_STATE_COUNT; ++value) {
-                printf("%s: (%zu)\n", defined_state_list[value].name, value);
+                print_user_message(
+                        "%s: (%zu)\n", defined_state_list[value].name, value);
         }
 }
 
@@ -139,6 +246,7 @@ void destroy_todo_data(struct todo_data *todo)
                 free(todo->state->string);
         }
 
+        free(todo->id);
         free(todo->state);
         free(todo->subject);
         free(todo->description);
