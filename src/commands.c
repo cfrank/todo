@@ -84,7 +84,7 @@ int add_command(int argc, char **argv)
         }
 
         // arguments points to a item in argv
-        char *id = arg_list->arguments[0];
+        char *id = strdup(arg_list->arguments[0]);
 
         destroy_argument_list(arg_list);
 
