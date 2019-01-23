@@ -158,7 +158,7 @@ static void file_callback(const struct dirent *entry)
 
                 struct todo_data *todo = read_todo_from_file(todo_file);
 
-                printf("%-10s%-10llu", todo->id, todo->priority);
+                printf("%-10s%-10" PRIu64, todo->id, todo->priority);
 
                 if (todo->state->is_custom) {
                         printf("%-20s", todo->state->string);
