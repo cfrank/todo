@@ -118,11 +118,11 @@ bool path_exists(const char *path)
 ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
                             bool consume)
 {
-        return read_file_until_deliminator(buffer, size, '\n', file, consume);
+        return read_file_until_delimiter(buffer, size, '\n', file, consume);
 }
 
-ssize_t read_file_until_deliminator(char **buffer, size_t *size,
-                                    char deliminator, FILE *file, bool consume)
+ssize_t read_file_until_delimiter(char **buffer, size_t *size, char delimiter,
+                                  FILE *file, bool consume)
 {
         char ch;
         char *buffer_pos;
@@ -169,9 +169,9 @@ ssize_t read_file_until_deliminator(char **buffer, size_t *size,
 
                 *buffer_pos++ = ch;
 
-                if (ch == deliminator) {
+                if (ch == delimiter) {
                         if (!consume) {
-                                // If not consuming delim roll back buffer
+                                // If not consuming delimiter roll back buffer
                                 buffer_pos--;
                         }
 
