@@ -67,11 +67,9 @@ size_t directory_iterator(const char *directory_path, file_callback_t callback)
         struct dirent *entry;
 
         while ((entry = readdir(stream)) != NULL) {
-                char *entry_name = entry->d_name;
-
                 // Ignore entries '.' and '..'
-                if (strncmp(entry_name, ".", 2) != 0
-                    || strncmp(entry_name, "..", 2) != 0) {
+                if (strncmp(entry->d_name, ".", 2) != 0
+                    || strncmp(entry->d_name, "..", 2) != 0) {
                         continue;
                 }
 
