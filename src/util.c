@@ -217,6 +217,11 @@ FILE *open_file(const char *file_path, const char *mode)
         }
 }
 
+void remove_file(const char *file_path)
+{
+        unlink(file_path);
+}
+
 static void flush_input_buffer(void)
 {
         int ch;

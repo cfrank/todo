@@ -28,7 +28,8 @@ ssize_t read_file_until_delimiter(char **buffer, size_t *size, char delimiter,
 ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
                             bool consume);
 DIR *open_directory(const char *directory_path);
-FILE *open_file(const char *file, const char *mode);
+FILE *open_file(const char *file_path, const char *mode);
+void remove_file(const char *file_path);
 
 // Input utilities
 char *ingest_user_input(size_t initial_size);
