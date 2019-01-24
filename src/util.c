@@ -55,18 +55,20 @@ bool create_directory(const char *directory_path)
         return true;
 }
 
-void directory_iterator(const char *directory_path, file_callback_t callback)
+size_t directory_iterator(const char *directory_path, file_callback_t callback)
 {
+        size_t entries = 0;
         DIR *stream = opendir(directory_path);
 
         if (stream == NULL) {
                 die("Failed to list %s: %s", directory_path, strerror(errno));
         }
 
-        struct dirent *directory;
+        struct dirent *entry;
 
-        while ((directory = readdir(stream)) != NULL) {
-                callback(directory);
+        while ((entry = readdir(stream)) != NULL) {
+                callback(entry);
+                ++entries;
         }
 
         if (errno == EBADF) {
@@ -74,6 +76,9 @@ void directory_iterator(const char *directory_path, file_callback_t callback)
         }
 
         closedir(stream);
+
+        // Return the number of entries minus '.' and '..'
+        return entries - 2;
 }
 
 bool create_file(const char *file_path, const char *mode)

@@ -225,7 +225,12 @@ void list_command(void)
 
         printf("%-10s%-10s%-20s%s\n", "Id.", "Prior.", "State", "Subject");
 
-        directory_iterator(TODO_DIR_NAME, file_callback);
+        size_t todos_found = directory_iterator(TODO_DIR_NAME, file_callback);
+
+        if (todos_found < 1) {
+                print_user_message("No todos found - Add one with 'todo %s'\n",
+                                   command_to_string(ADD));
+        }
 }
 
 void version_command(void)

@@ -8,7 +8,6 @@
 
 enum arg_command {
         ADD,
-        CREATE,
         DELETE,
         EDIT,
         HELP,

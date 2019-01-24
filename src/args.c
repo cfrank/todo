@@ -15,7 +15,6 @@ struct command_tuple {
 
 static const struct command_tuple command_list[COMMAND_COUNT] = {
         {ADD, "add"},
-        {CREATE, "create"},
         {DELETE, "delete"},
         {EDIT, "edit"},
         {HELP, "help"},
