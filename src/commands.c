@@ -129,7 +129,7 @@ int add_command(int argc, char **argv)
 void delete_command(int argc, char **argv)
 {
         if (!is_initialized()) {
-                die("You must first initialize todo before adding a todo");
+                die("You must first initialize todo before deleting a todo");
         }
 
         struct argument_list *arg_list = create_argument_list(argc, argv, 2);
@@ -220,7 +220,7 @@ static void file_callback(const struct dirent *entry)
 void list_command(void)
 {
         if (!is_initialized()) {
-                die("You must first initialize todo before adding a todo");
+                die("You must first initialize todo before listing todos");
         }
 
         printf("%-10s%-10s%-20s%s\n", "Id.", "Prior.", "State", "Subject");
