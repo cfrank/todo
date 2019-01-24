@@ -24,11 +24,8 @@ int main(int argc, char **argv)
         case ADD:
                 add_command(argc, argv);
                 break;
-        case CREATE:
-                printf("Create...");
-                break;
         case DELETE:
-                printf("Delete...");
+                delete_command(argc, argv);
                 break;
         case EDIT:
                 printf("Edit...");

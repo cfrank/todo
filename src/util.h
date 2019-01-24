@@ -21,14 +21,15 @@ char *convert_string_to_lowercase(const char *string);
 bool create_file(const char *file, const char *mode);
 char *create_file_path(const char *directory_path, const char *filename);
 bool create_directory(const char *directory_path);
-void directory_iterator(const char *directory_path, file_callback_t callback);
+size_t directory_iterator(const char *directory_path, file_callback_t callback);
 bool path_exists(const char *path);
 ssize_t read_file_until_delimiter(char **buffer, size_t *size, char delimiter,
                                   FILE *file, bool consume);
 ssize_t read_line_from_file(char **buffer, size_t *size, FILE *file,
                             bool consume);
 DIR *open_directory(const char *directory_path);
-FILE *open_file(const char *file, const char *mode);
+FILE *open_file(const char *file_path, const char *mode);
+void remove_file(const char *file_path);
 
 // Input utilities
 char *ingest_user_input(size_t initial_size);
