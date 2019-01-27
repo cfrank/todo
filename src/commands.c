@@ -274,6 +274,7 @@ void view_command(int argc, char **argv)
                "-- Description below --",
                todo->description);
 
+        free(path);
         destroy_todo_data(todo);
         fclose(todo_file);
         destroy_argument_list(arg_list);
