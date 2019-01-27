@@ -9,3 +9,4 @@ void delete_command(int argc, char **argv);
 void init_command(void);
 void list_command(void);
 void version_command(void);
+void view_command(int argc, char **argv);
