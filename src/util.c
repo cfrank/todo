@@ -68,8 +68,8 @@ size_t directory_iterator(const char *directory_path, file_callback_t callback)
 
         while ((entry = readdir(stream)) != NULL) {
                 // Ignore entries '.' and '..'
-                if (strncmp(entry->d_name, ".", 2) != 0
-                    || strncmp(entry->d_name, "..", 2) != 0) {
+                if (strncmp(entry->d_name, ".", 2) < 0
+                    || strncmp(entry->d_name, "..", 2) < 0) {
                         continue;
                 }
 
