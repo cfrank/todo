@@ -240,3 +240,42 @@ void version_command(void)
                VERSION_MINOR,
                VERSION_PATCH);
 }
+
+void view_command(int argc, char **argv)
+{
+        if (!is_initialized()) {
+                die("You must first initialize todo before viewing a todo");
+        }
+
+        struct argument_list *arg_list = create_argument_list(argc, argv, 2);
+
+        if (arg_list->length != 1) {
+                die("Invalid arguments supplied see 'todo help %s'",
+                    command_to_string(VIEW));
+        }
+
+        char *path = create_file_path(TODO_DIR_NAME, arg_list->arguments[0]);
+
+        if (!path_exists(path)) {
+                die("Could not find a todo with id: %s",
+                    arg_list->arguments[0]);
+        }
+
+        FILE *todo_file = open_file(path, "r");
+
+        struct todo_data *todo = read_todo_from_file(todo_file);
+
+        printf("Id: %s\nPriority: %" PRIu64
+               "\nState: %s\nSubject: %s\n%s\n%s\n",
+               todo->id,
+               todo->priority,
+               get_state(todo),
+               todo->subject,
+               "-- Description below --",
+               todo->description);
+
+        free(path);
+        destroy_todo_data(todo);
+        fclose(todo_file);
+        destroy_argument_list(arg_list);
+}

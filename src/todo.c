@@ -43,7 +43,7 @@ int main(int argc, char **argv)
                 version_command();
                 break;
         case VIEW:
-                printf("View...");
+                view_command(argc, argv);
                 break;
         default:
                 break;
