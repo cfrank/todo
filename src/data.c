@@ -143,7 +143,7 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
                 goto return_err;
         }
 
-        id = strdup(buffer);
+        id = duplicate_string(buffer);
 
         // Get priority
         segment = strtok(NULL, ";");
@@ -162,7 +162,7 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
         }
 
         if (is_custom) {
-                char *state_string = strdup(segment);
+                char *state_string = duplicate_string(segment);
                 state = create_custom_state_data(true, state_string);
 
                 state->is_custom = is_custom;
@@ -182,7 +182,7 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
                 goto return_err;
         }
 
-        subject = strdup(segment);
+        subject = duplicate_string(segment);
 
         // Get the description
         segment = strtok(NULL, ";");
@@ -191,7 +191,7 @@ struct todo_data *read_todo_from_file(FILE *todo_file)
                 goto return_err;
         }
 
-        description = strdup(segment);
+        description = duplicate_string(segment);
 
         todo = create_todo_data(id, priority, state, subject, description);
 
