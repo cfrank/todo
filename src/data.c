@@ -228,6 +228,15 @@ void print_state_values(void)
         }
 }
 
+const char *get_state(const struct todo_data *todo)
+{
+        if (todo->state->is_custom) {
+                return todo->state->string;
+        }
+
+        return state_value_to_string(todo->state->value);
+}
+
 const char *state_value_to_string(enum state_value value)
 {
         for (size_t i = 0; i < STATE_COUNT; ++i) {

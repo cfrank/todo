@@ -46,6 +46,7 @@ struct todo_data *read_todo_from_file(FILE *file_file);
 
 enum state_value num_to_state_value(size_t num);
 void print_state_values(void);
+const char *get_state(const struct todo_data *todo);
 const char *state_value_to_string(enum state_value value);
 
 void destroy_todo_data(struct todo_data *todo);

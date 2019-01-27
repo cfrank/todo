@@ -265,7 +265,14 @@ void view_command(int argc, char **argv)
 
         struct todo_data *todo = read_todo_from_file(todo_file);
 
-        print_user_message("%s - %s\n", todo->id, todo->subject);
+        printf("Id: %s\nPriority: %" PRIu64
+               "\nState: %s\nSubject: %s\n%s\n%s\n",
+               todo->id,
+               todo->priority,
+               get_state(todo),
+               todo->subject,
+               "-- Description below --",
+               todo->description);
 
         destroy_todo_data(todo);
         fclose(todo_file);
