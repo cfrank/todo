@@ -16,13 +16,13 @@ static void flush_input_buffer(void);
 char *duplicate_string(const char *string)
 {
         size_t string_length = strlen(string) + 1;
-        char *lowercase_string = malloc(string_length);
+        char *result = malloc(string_length);
 
-        if (lowercase_string != NULL) {
-                memcpy(lowercase_string, string, string_length);
+        if (result != NULL) {
+                memcpy(result, string, string_length);
         }
 
-        return lowercase_string;
+        return result;
 }
 
 char *convert_string_to_lowercase(const char *string)
